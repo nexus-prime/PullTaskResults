@@ -9,7 +9,7 @@ NumPages=$2
 Output="$(echo $SCRIPT_DIR | awk '{gsub("resources", "", $0); print}')$3"
 echo $Output
 delim=';'
-echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU TIme [sec];Credit;Application" > $Output
+echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU Time [sec];Credit;Application" > $Output
 
 for jnd in `seq 0 $(($NumPages-1))`;
 do
