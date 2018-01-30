@@ -15,7 +15,7 @@ Output=$4
 
 echo $URL
 delim=";"
-echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU TIme [sec];Credit;Application" > $Output
+echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU Time [sec];Credit;Application" > $Output
 
 # Check for projects that are incompatible with main script
 if [ "$URL" == "https://einsteinathome.org" ]
