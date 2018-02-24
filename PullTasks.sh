@@ -10,21 +10,22 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Load input data
 URL="$(cat $SCRIPT_DIR/resources/WhiteList_URL_Lookup.txt | grep "$1"	| awk -F[=,=] '{print $2}')"
 HostID=$2			
-NumPages=$3				
+NumPages=$3		
+dir=$(pwd)		
 Output=$4
 
 echo $URL
 delim=";"
-echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU Time [sec];Credit;Application" > $Output
+echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Status;Run Time [sec];CPU TIme [sec];Credit;Application" > $Output
 
 # Check for projects that are incompatible with main script
 if [ "$URL" == "https://einsteinathome.org" ]
 then 
-	bash $SCRIPT_DIR/resources/PullTasks_Einstein_Special.sh $HostID $NumPages $Output
+	bash $SCRIPT_DIR/PullTasks_Einstein_Special.alt $HostID $NumPages $Output
 	
 elif [ "$URL" == "http://www.rechenkraft.net/yoyo" ]
 then
-	bash $SCRIPT_DIR/resources/PullTasks_Yoyo_Special.sh $HostID $NumPages $Output
+	bash $SCRIPT_DIR/PullTasks_Yoyo_Special.alt $HostID $NumPages $Output
 	
 elif [ "$URL" == "https://download.worldcommunitygrid.org/boinc" ]
 then
@@ -116,5 +117,5 @@ grep  'UTC' $Output > temp && mv temp $Output
 grep  -v '.rogress' $Output > temp && mv temp $Output
 
 rm $SCRIPT_DIR/resources/x.temp 
-cat $Output
+#cat $Output
 fi

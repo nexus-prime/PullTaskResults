@@ -10,7 +10,7 @@ GPUgrid Gpugrid GPU grid gpug GPUg GPU GPU Grid =https://www.gpugrid.net=
 LHC lhc LHCclasic lhc@home LHC@home lhc@home classic LHC@home Classic=https://lhcathome.cern.ch/lhcathome=
 milkyway MW mw mw@home MW@home milkyway@home Milkyway@home Milkyway =http://milkyway.cs.rpi.edu/milkyway=
 NFS nfs nfs@home NFS@home Nfs@home Nfs=https://escatter11.fullerton.edu/nfs=
-number fields Number Feilds Number fields NumberFields@home Numberfields@home numberfields@home=https://numberfields.asu.edu/NumberFields=
+numf number fields Number Feilds Number fields NumberFields@home Numberfields@home numberfields@home=https://numberfields.asu.edu/NumberFields=
 ODLK ODLK1 odlk odlk1 Odlk1 Odlk latin squares latinsquares LatinSquares Latin Squares Latinsquares =https://boinc.multi-pool.info/latinsquares=
 Prime Grid PrimeGrid PrimeGRID Pgrid PGrid PGRID pgrid prime Primegrid grid primegrid =http://23.253.170.196=
 Rosetta rosetta rosetta@home Rosetta@home =http://boinc.bakerlab.org/rosetta=
