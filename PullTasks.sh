@@ -29,7 +29,7 @@ then
 	
 elif [ "$URL" == "https://download.worldcommunitygrid.org/boinc" ]
 then
-	echo "World Comuunity Grid does not report data task data on a per host basis"
+	echo "World Community Grid does not report data task data on a per host basis"
 else 
 # Start Main Loop
 for jnd in `seq 0 $(($NumPages-1))`;
