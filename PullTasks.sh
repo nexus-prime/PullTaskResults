@@ -31,19 +31,46 @@ elif [ "$URL" == "https://download.worldcommunitygrid.org/boinc" ]
 then
 	echo "World Community Grid does not report data task data on a per host basis"
 else 
+
+
+# Start Download Loop
+echo 'time'
+for jnd in `seq 0 $(($NumPages-1))`;
+do
+offset=$(($jnd*20))
+	wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -q -O $SCRIPT_DIR/resources/"x$jnd.temp" &
+
+done
+
+wait
+echo 'time'
+# Check for invalid table
+for jnd in `seq 0 $(($NumPages-1))`;
+do
+offset=$(($jnd*20))
+	
+	if grep -q '<title>Invalid tasks for computer' $SCRIPT_DIR/resources/"x$jnd.temp"
+	then
+		wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=3&appid=0" -q -O $SCRIPT_DIR/resources/"x$jnd.temp" &
+	fi
+
+done
+
+wait
+
+
 # Start Main Loop
 for jnd in `seq 0 $(($NumPages-1))`;
 do
 offset=$(($jnd*20))
 
-
+cat $SCRIPT_DIR/resources/"x$jnd.temp" > $SCRIPT_DIR/resources/x.temp
 # Pull data from the website
-
-	wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -O $SCRIPT_DIR/resources/x.temp
-	if grep -q '<title>Invalid tasks for computer' $SCRIPT_DIR/resources/x.temp
-	then
-		wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=3&appid=0" -O $SCRIPT_DIR/resources/x.temp
-	fi
+#	wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -O $SCRIPT_DIR/resources/x.temp
+#	if grep -q '<title>Invalid tasks for computer' $SCRIPT_DIR/resources/x.temp
+#	then
+#		wget "$URL/results.php?hostid=$HostID&offset=$offset&show_names=0&state=3&appid=0" -O $SCRIPT_DIR/resources/x.temp
+#	fi
 
 	
 # Kill loop if website is out of data
@@ -116,6 +143,6 @@ grep  'UTC' $Output > temp && mv temp $Output
 
 grep  -v '.rogress' $Output > temp && mv temp $Output
 
-rm $SCRIPT_DIR/resources/x.temp 
+rm $SCRIPT_DIR/resources/x*.temp 
 #cat $Output
 fi

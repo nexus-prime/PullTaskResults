@@ -8,41 +8,56 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 HostID=$1			
 NumPages=$2				
 Output="$3"
-echo "vvv"
-echo $Output
+
 delim=';'
 echo "Task;Work Unit;Sent [UTC];Time Reported [UTC];Outcome;Run Time [sec];Credit Claimed;Credit Granted;Application" > $Output
+
+
+# Start Download Loop
 
 for jnd in `seq 0 $(($NumPages-1))`;
 do
 offset=$(($jnd*20))
-wget "http://www.rechenkraft.net/yoyo/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -O "$SCRIPT_DIR/x.temp"
+	wget "http://www.rechenkraft.net/yoyo/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -q -O $SCRIPT_DIR/resources/"x$jnd.temp" &
 
+done
+
+wait
+
+
+
+
+for jnd in `seq 0 $(($NumPages-1))`;
+do
+offset=$(($jnd*20))
+
+#wget "http://www.rechenkraft.net/yoyo/results.php?hostid=$HostID&offset=$offset&show_names=0&state=4&appid=0" -O "$SCRIPT_DIR/resources/x.temp"
+cat $SCRIPT_DIR/resources/"x$jnd.temp" > $SCRIPT_DIR/resources/x.temp
 
 
 # Kill loop if website is out of data
-	if grep -q 'result.php?resultid' $SCRIPT_DIR/x.temp
+	if grep -q 'result.php?resultid' $SCRIPT_DIR/resources/x.temp
 	then
 	:
 	else
 	break
 	fi
 # Trim header and navigation buttons
-	headersize="$(cat $SCRIPT_DIR/x.temp| grep -n 'result.php?resultid'|cut -f1 -d:|head -1)"
+	headersize="$(cat $SCRIPT_DIR/resources/x.temp| grep -n 'result.php?resultid'|cut -f1 -d:|head -1)"
 	headersize="$(($headersize-1))d"
-	sed -i "1,$headersize" $SCRIPT_DIR/x.temp
-	head -n -13 $SCRIPT_DIR/x.temp > $SCRIPT_DIR/x.temp2
-	mv $SCRIPT_DIR/x.temp2 $SCRIPT_DIR/x.temp
+	sed -i "1,$headersize" $SCRIPT_DIR/resources/x.temp
+	head -n -13 $SCRIPT_DIR/resources/x.temp > $SCRIPT_DIR/resources/x.temp2
+	mv $SCRIPT_DIR/resources/x.temp2 $SCRIPT_DIR/resources/x.temp
 
 
- 	cat $SCRIPT_DIR/x.temp | sed "s/'......'//"| sed s/'<font color=>'// | sed 's@</font>@@'  > $SCRIPT_DIR/x.temp2 
+ 	cat $SCRIPT_DIR/resources/x.temp | sed "s/'......'//"| sed s/'<font color=>'// | sed 's@</font>@@'  > $SCRIPT_DIR/resources/x.temp2 
 
-	mv $SCRIPT_DIR/x.temp2 $SCRIPT_DIR/x.temp
+	mv $SCRIPT_DIR/resources/x.temp2 $SCRIPT_DIR/resources/x.temp
 
-	sed -i 's/ //g' $SCRIPT_DIR/x.temp
+	sed -i 's/ //g' $SCRIPT_DIR/resources/x.temp
 
 
-	length="$(wc -l < $SCRIPT_DIR/x.temp)"
+	length="$(wc -l < $SCRIPT_DIR/resources/x.temp)"
 	
 	if [ "$length" -eq "0" ]
 	then
@@ -59,35 +74,35 @@ wget "http://www.rechenkraft.net/yoyo/results.php?hostid=$HostID&offset=$offset&
 		readln=$(( $ind*$dataseg+1))
 
 		text=""
-		text="$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')$delim"
+		text="$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')$delim"
 		readln=$(($readln+1))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')$delim"	
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')$delim"	
 		
-		WUid="$(awk "NR==2 {print;exit}" x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')"
+		WUid="$(awk "NR==2 {print;exit}" $SCRIPT_DIR/resources/x.temp | sed 's/.*?//' | awk -F[=,\"] '{print $2}')"
 		
 		readln=$(($readln+2))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
 		readln=$(($readln+1))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
 		readln=$(($readln+2))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  sed 's/^.\{4\}//' | sed 's/.\{5\}$//')$delim"
 		readln=$(($readln+2))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+")$delim"
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+")$delim"
 		readln=$(($readln+1))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+")$delim"	
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+")$delim"	
 		readln=$(($readln+1))
-		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+|pending")$delim"	
+		text="$text$(awk "NR==$readln {print;exit}" $SCRIPT_DIR/resources/x.temp |  tr --delete , | grep -Eo "[0-9]+\.[0-9]+|pending")$delim"	
 		text="$text$(wget "http://www.rechenkraft.net/yoyo/workunit.php?wuid=$WUid" -q -O -|grep 'application</td'| sed 's/.*fieldvalue>//' |cut -f1 -d'<')"
 		echo $text >> $Output
 
 	   done  
 
 done
-
-grep  'UTC' $Output > temp && mv temp $Output
-grep  -v 'Unknown' $Output > temp && mv temp $Output
-grep  -v 'error' $Output > temp && mv temp $Output
-grep  -v 'pending' $Output > temp && mv temp $Output
-rm $SCRIPT_DIR/x.temp
+touch $SCRIPT_DIR/resources/temp
+grep  'UTC' $Output > $SCRIPT_DIR/resources/temp && mv $SCRIPT_DIR/resources/temp $Output
+grep  -v 'Unknown' $Output > $SCRIPT_DIR/resources/temp && mv $SCRIPT_DIR/resources/temp $Output
+grep  -v 'error' $Output > $SCRIPT_DIR/resources/temp && mv $SCRIPT_DIR/resources/temp $Output
+grep  -v 'pending' $Output > $SCRIPT_DIR/resources/temp && mv $SCRIPT_DIR/resources/temp $Output
+rm $SCRIPT_DIR/resources/x*.temp
 
 #cat $Output
