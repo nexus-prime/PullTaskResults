@@ -34,7 +34,7 @@ else
 
 
 # Start Download Loop
-echo 'time'
+
 for jnd in `seq 0 $(($NumPages-1))`;
 do
 offset=$(($jnd*20))
@@ -43,7 +43,7 @@ offset=$(($jnd*20))
 done
 
 wait
-echo 'time'
+
 # Check for invalid table
 for jnd in `seq 0 $(($NumPages-1))`;
 do
