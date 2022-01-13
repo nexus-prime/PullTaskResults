@@ -3,7 +3,7 @@ Download metadata for completed BOINC tasks by a specified host
 
 To use run:
 
-bash /PullTaskResults/PullTaskResults.sh [project name] [HostID for project] [pages of tasks to return] [Output File name]
+bash PullTaskResults.sh [project name] [HostID for project] [pages of tasks to return] [Output File name]
     
     
 [project name] - name of project i.e. primegrid Seti YOYO
